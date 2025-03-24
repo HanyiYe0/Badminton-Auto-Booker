@@ -14,7 +14,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
 chrome.alarms.onAlarm.addListener((alarm) => {
     console.log("Alarm triggered:", alarm.name);
     // create notification
-    chrome.notifications.create({
+    chrome.notifications.create("spot-open-notification", {
         type: "basic",
         iconUrl: 'images/tear.png',
         title: "Spot Open!",
@@ -22,3 +22,13 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     });
     console.log(chrome.runtime.lastError)
 });
+
+chrome.notifications.onClicked.addListener((notificationId) => {
+    callback: goToBooking()
+});
+
+function goToBooking() {
+    chrome.tabs.create({
+        url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4?widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a"
+    });
+};

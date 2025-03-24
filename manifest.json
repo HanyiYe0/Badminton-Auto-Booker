@@ -25,7 +25,13 @@
 
     "permissions": [
         "alarms",
-        "notifications"
+        "notifications",
+        "tabs"
+    ],
+
+    "host_permissions": [
+      "http://*/*",
+      "https://*/*"
     ],
 
     "background": {
