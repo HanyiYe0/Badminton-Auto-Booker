@@ -4,8 +4,8 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
     if (reason !== "install") {
         return;
     }
-    // Create an alarm so we have something to look at in the demo
-    await chrome.alarms.create('demo-default-alarm', {
+    // Create alarm
+    await chrome.alarms.create('spot-open-alarm', {
       periodInMinutes: 1,
       when: Date.now()
     });
@@ -13,4 +13,12 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
 
 chrome.alarms.onAlarm.addListener((alarm) => {
     console.log("Alarm triggered:", alarm.name);
+    // create notification
+    chrome.notifications.create({
+        type: "basic",
+        iconUrl: 'images/tear.png',
+        title: "Spot Open!",
+        message: "A spot has opened up. Click to go to website and book."
+    });
+    console.log(chrome.runtime.lastError)
 });
