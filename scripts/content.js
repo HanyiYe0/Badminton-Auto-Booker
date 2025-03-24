@@ -1,3 +1,8 @@
+// Global variables
+let timeSlotElement;
+let wantedStartTime = "01:30"
+let wantedEndTime = "01:12"
+
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
     console.log(reason)
@@ -11,24 +16,29 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
     });
 });
 
+// when an alarm is created 
 chrome.alarms.onAlarm.addListener((alarm) => {
     console.log("Alarm triggered:", alarm.name);
-    // create notification
-    chrome.notifications.create("spot-open-notification", {
-        type: "basic",
-        iconUrl: 'images/tear.png',
-        title: "Spot Open!",
-        message: "A spot has opened up. Click to go to website and book."
-    });
-    console.log(chrome.runtime.lastError)
+    displaySlotAvailable();
 });
 
+// redirect to the drop in booking page when click
 chrome.notifications.onClicked.addListener((notificationId) => {
     callback: goToBooking()
 });
 
 function goToBooking() {
     chrome.tabs.create({
-        url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4?widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a"
+        url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=491a603e-4043-4ab6-b04d-8fac51edbcfc&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False"
     });
 };
+
+function displaySlotAvailable() {
+    chrome.notifications.create("spot-open-notification", {
+        type: "basic",
+        iconUrl: 'images/badminton.png',
+        title: "Spot Open!",
+        message: "A spot has opened up. Click to go to website and book."
+    });
+};
+
