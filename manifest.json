@@ -18,8 +18,7 @@
         {
             "js": ["scripts/content.js"],
             "matches": [
-                "https://developer.chrome.com/docs/extensions/*",
-                "https://developer.chrome.com/docs/webstore/*"
+                "https://cityofmarkham.perfectmind.com/*"
               ]
         }
     ],
@@ -28,7 +27,8 @@
         "alarms",
         "notifications",
         "tabs",
-        "storage"
+        "storage",
+        "scripting"
     ],
 
     "host_permissions": [
