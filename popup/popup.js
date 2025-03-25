@@ -29,7 +29,7 @@ document.getElementById('stop-btn').addEventListener('click', async (e) => {
     });
 
     await chrome.runtime.sendMessage( {
-        response: "buttonOff"
+        action: "buttonOff"
     });
 });
   

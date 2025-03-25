@@ -1,7 +1,6 @@
 var state;
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "buttonOn") {
-      console.log("GOing in");
       // Create alarm
       chrome.alarms.create('spot-open-alarm', {
         periodInMinutes: 1,
@@ -9,9 +8,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       });    
     } else if (request.action === "buttonOff") {
         // Remove the alarm
-        chrome.alarms.clear( {
-          name: 'spot-open-alarm'
-      });
+        chrome.alarms.clear('spot-open-alarm');
     }
 });
 
