@@ -1,7 +1,8 @@
 // Global variables
 let timeSlotElement;
-let wantedStartTime = "01:30"
-let wantedEndTime = "01:12"
+
+let wantedStartTime = chrome.storage.sync.get("startTime");
+let wantedEndTime = chrome.storage.sync.get("endTime");
 
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
@@ -42,3 +43,7 @@ function displaySlotAvailable() {
     });
 };
 
+
+function checkAvailable() {
+    
+}
