@@ -11,6 +11,13 @@ chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime'], (data) =>
     for (let i = 0; i < rows.length; i++) {
         // check if the date is correct
         if (rows[i].classList.contains('bm-marker-row')) {
+            if (rows[i].textContent.includes(dateWanted)) {
+                isDate = true;
+            } else {
+                isDate = false;
+            }
+        };
+        if (isDate && rows[i].classList.contains('bm-class-row')) {
             console.log(rows[i].textContent);
         };
     };
