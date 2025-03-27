@@ -74,5 +74,5 @@ async function getSlotsAvailable() {
       target: { tabId: tab.id },
       files: ["scripts/content.js"],
     });
-  }, 3000);
+  }, 2000);
 }

@@ -1,3 +1,4 @@
+var found;
 chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'], (data) => {
     wantedStartTime = data.startTime;
     wantedEndTime = data.endTime;
