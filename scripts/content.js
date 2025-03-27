@@ -6,7 +6,7 @@ chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'
     dateWanted = formatDate(data.date);
     wantedLocation = data.location;
     isDate = false;
-    
+    found = false;
     console.log(wantedFullTime);
     // Find all date rows
     const table = document.getElementById("classes");
@@ -34,6 +34,7 @@ chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'
                             chrome.runtime.sendMessage({
                                 action: "slotOpen"
                             });
+                            found = true;
                         };
                     };
                 };
@@ -42,6 +43,11 @@ chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'
     };
 });
 
+if (found === false) {
+    chrome.runtime.sendMessage({
+        action: "noSlotsFound"
+    });
+}
 
 function formatDate(date) {
     const words = date.split('-');

@@ -1,7 +1,11 @@
-var state;
+let tempTab;
+let state;
 const activeContentScripts = new Set();
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log("Received message:", request); // Log the entire message object
+
+  
   if (request.action === "buttonOn") {
     // Create alarm
     chrome.alarms.create('spot-open-alarm', {
@@ -13,8 +17,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       chrome.alarms.clear('spot-open-alarm');
   } else if (request.action === "slotOpen") {
     displaySlotAvailable();
-  }
-
+  } else if (request.action === "noSlotsFound") {
+    console.log("here");
+    if (tempTab?.id) {
+      chrome.tabs.remove(tempTab.id);
+    }
+  } else if (request.action === "slotAvailable") {
+    chrome.notifications.create({
+        type: "basic",
+        iconUrl: "images/icon48.png",
+        title: "Spot Available!",
+        message: `${message.startTime} - ${message.endTime} slot opened!`
+    });
+  }   
 });
 
 // when an alarm is created 
@@ -25,7 +40,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 
 // redirect to the drop in booking page when click
 chrome.notifications.onClicked.addListener(() => {
-  callback: goToBooking()
+  goToBooking()
 });
 
 function goToBooking() {
@@ -44,25 +59,15 @@ function displaySlotAvailable() {
   });
 };
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "slotAvailable") {
-      chrome.notifications.create({
-          type: "basic",
-          iconUrl: "images/icon48.png",
-          title: "Spot Available!",
-          message: `${message.startTime} - ${message.endTime} slot opened!`
-      });
-  }
-});
-
 async function getSlotsAvailable() {
   // create hidden tab
   const tab = await chrome.tabs.create({
     url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=491a603e-4043-4ab6-b04d-8fac51edbcfc&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False",
     active: false,
     pinned: true,
-    selected: true
   });
+  console.log("Created tab with ID:", tab.id); 
+  tempTab = tab
   // delay so the website can inject their own stuff into it
   setTimeout(() => {
     chrome.scripting.executeScript({
@@ -70,6 +75,4 @@ async function getSlotsAvailable() {
       files: ["scripts/content.js"],
     });
   }, 3000);
-  
-
 }
