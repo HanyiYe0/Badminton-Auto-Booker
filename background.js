@@ -1,23 +1,24 @@
 var state;
+const activeContentScripts = new Set();
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "buttonOn") {
-      // Create alarm
-      chrome.alarms.create('spot-open-alarm', {
-        periodInMinutes: 1,
-        when: Date.now()
-      });    
-    } else if (request.action === "buttonOff") {
-        // Remove the alarm
-        chrome.alarms.clear('spot-open-alarm');
-    }
+  if (request.action === "buttonOn") {
+    // Create alarm
+    chrome.alarms.create('spot-open-alarm', {
+      periodInMinutes: 1,
+      when: Date.now()
+    });    
+  } else if (request.action === "buttonOff") {
+      // Remove the alarm
+      chrome.alarms.clear('spot-open-alarm');
+  }
+
 });
 
-
-
 // when an alarm is created 
-chrome.alarms.onAlarm.addListener((alarm) => {
+chrome.alarms.onAlarm.addListener(async (alarm) => {
   console.log("Alarm triggered:", alarm.name);
-  displaySlotAvailable();
+  getSlotsAvailable();
 });
 
 // redirect to the drop in booking page when click
@@ -36,7 +37,7 @@ function displaySlotAvailable() {
       type: "basic",
       iconUrl: 'images/badminton.png',
       title: "Spot Open!",
-      message: "A spot has opened up. Click to go to website and book."
+      message: "A slot has opened up. Click to go to website and book."
   });
 };
 
@@ -50,3 +51,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       });
   }
 });
+
+async function getSlotsAvailable() {
+  // create hidden tab
+  const tab = await chrome.tabs.create({
+    url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=491a603e-4043-4ab6-b04d-8fac51edbcfc&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False",
+    active: false,
+    pinned: true,
+    selected: false
+  });
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    files: ["scripts/content.js"],
+  });
+
+}

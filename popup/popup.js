@@ -1,6 +1,6 @@
 document.getElementById('save-btn').addEventListener('click', async (e) => {
     e.preventDefault();
-    
+    // Store all the info from the form
     const sportType = document.getElementById('sport-type').value;
     const date = document.getElementById('date').value;
     const startTime = document.getElementById('start-time').value;
@@ -15,7 +15,7 @@ document.getElementById('save-btn').addEventListener('click', async (e) => {
     await chrome.storage.sync.set({ sportType, date, startTime, endTime }, () => {
       console.log('Preferences saved!');
     });
-
+    // Do the button on stuff at background.js
     await chrome.runtime.sendMessage( {
         action: "buttonOn"
     });
@@ -23,11 +23,11 @@ document.getElementById('save-btn').addEventListener('click', async (e) => {
 
 document.getElementById('stop-btn').addEventListener('click', async (e) => {
     e.preventDefault();
-    // Turn off and stop the alarms
+    // set the icon as off
     await chrome.action.setBadgeText({
         text: "OFF"
     });
-
+    // Do the button off stuff: just delete alarm
     await chrome.runtime.sendMessage( {
         action: "buttonOff"
     });
