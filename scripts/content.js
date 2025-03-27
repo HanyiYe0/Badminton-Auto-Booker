@@ -4,7 +4,7 @@ chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime'], (data) =>
     activity = data.sportType;
     dateWanted = formatDate(data.date);
     isDate = false;
-    console.log(dateWanted);
+    console.log(activity);
     // Find all date rows
     const table = document.getElementById("classes");
     const rows = table.getElementsByTagName("tr");
@@ -17,8 +17,12 @@ chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime'], (data) =>
                 isDate = false;
             }
         };
+        // if date is correct, get all the activities under that date
         if (isDate && rows[i].classList.contains('bm-class-row')) {
-            console.log(rows[i].textContent);
+            // check if the activity is correct
+            if (rows[i].textContent.includes(activity)) {
+                console.log(rows[i].textContent);
+            }
         };
     };
 });
