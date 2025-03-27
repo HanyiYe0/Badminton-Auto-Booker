@@ -58,11 +58,15 @@ async function getSlotsAvailable() {
     url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=491a603e-4043-4ab6-b04d-8fac51edbcfc&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False",
     active: false,
     pinned: true,
-    selected: false
+    selected: true
   });
-  chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    files: ["scripts/content.js"],
-  });
+  // delay so the website can inject their own stuff into it
+  setTimeout(() => {
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: ["scripts/content.js"],
+    });
+  }, 3000);
+  
 
 }
