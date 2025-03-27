@@ -5,15 +5,18 @@ document.getElementById('save-btn').addEventListener('click', async (e) => {
     const date = document.getElementById('date').value;
     const startTime = document.getElementById('start-time').value;
     const endTime = document.getElementById('end-time').value;
-  
-    await chrome.action.setBadgeText({
-        text: "ON"
-    });
-
+    const location = document.getElementById('location').value;
 
     // Save to Chrome storage
-    await chrome.storage.sync.set({ sportType, date, startTime, endTime }, () => {
-      console.log('Preferences saved!');
+    await chrome.storage.sync.set({ sportType, date, startTime, endTime, location }, () => {
+        console.log('Preferences saved!');
+    });
+});
+
+document.getElementById('start-btn').addEventListener('click', async (e) => {
+    e.preventDefault();
+    await chrome.action.setBadgeText({
+        text: "ON"
     });
     // Do the button on stuff at background.js
     await chrome.runtime.sendMessage( {
@@ -34,10 +37,11 @@ document.getElementById('stop-btn').addEventListener('click', async (e) => {
 });
   
 // Load saved preferences on popup open
-chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime'], (data) => {
+chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'], (data) => {
     if (data.sportType) document.getElementById('sport-type').value = data.sportType;
     if (data.date) document.getElementById('date').value = data.date;
     if (data.startTime) document.getElementById('start-time').value = data.startTime;
     if (data.endTime) document.getElementById('end-time').value = data.endTime;
+    if (data.location) document.getElementById('location').value = data.location;
 });
 

@@ -11,6 +11,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if (request.action === "buttonOff") {
       // Remove the alarm
       chrome.alarms.clear('spot-open-alarm');
+  } else if (request.action === "slotOpen") {
+    displaySlotAvailable();
   }
 
 });
@@ -22,7 +24,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 });
 
 // redirect to the drop in booking page when click
-chrome.notifications.onClicked.addListener((notificationId) => {
+chrome.notifications.onClicked.addListener(() => {
   callback: goToBooking()
 });
 
@@ -31,6 +33,7 @@ function goToBooking() {
       url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=491a603e-4043-4ab6-b04d-8fac51edbcfc&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False"
   });
 };
+
 
 function displaySlotAvailable() {
   chrome.notifications.create("spot-open-notification", {

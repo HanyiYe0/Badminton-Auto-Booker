@@ -1,10 +1,13 @@
-chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime'], (data) => {
+chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'], (data) => {
     wantedStartTime = data.startTime;
     wantedEndTime = data.endTime;
+    wantedFullTime = formateTime(wantedStartTime, wantedEndTime);
     activity = data.sportType;
     dateWanted = formatDate(data.date);
+    wantedLocation = data.location;
     isDate = false;
-    console.log(activity);
+    
+    console.log(wantedFullTime);
     // Find all date rows
     const table = document.getElementById("classes");
     const rows = table.getElementsByTagName("tr");
@@ -21,8 +24,20 @@ chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime'], (data) =>
         if (isDate && rows[i].classList.contains('bm-class-row')) {
             // check if the activity is correct
             if (rows[i].textContent.includes(activity)) {
-                console.log(rows[i].textContent);
-            }
+                // check if time is correct
+                if (rows[i].textContent.includes(wantedFullTime)) {
+                    // check if location is correct
+                    if (rows[i].textContent.includes(wantedLocation)) {
+                        // check if slot open
+                        console.log(rows[i].textContent);
+                        if (rows[i].textContent.includes("Register")) {
+                            chrome.runtime.sendMessage({
+                                action: "slotOpen"
+                            });
+                        };
+                    };
+                };
+            };
         };
     };
 });
@@ -56,6 +71,33 @@ function formatDate(date) {
     } else {
         output = numToLetter[words[1]] + " " + Number(words[2]).toString() + "th, " + words[0];
     }
+    return output
+}
+
+function formateTime(sTime, eTime) {
+    let sList = sTime.split(':');
+    let eList = eTime.split(':');
+    let sTimeString;
+    let eTimeString;
+    if (Number(sList[0]) >= 12) {
+        sList[0] = (Number(sList[0]) - 12).toString()
+        sTimeString = "pm";
+    } else {
+        sTimeString = "am";
+    };
+
+    if (Number(eList[0]) >= 12) {
+        eList[0] = (Number(eList[0]) - 12).toString()
+        eTimeString = "pm";
+    } else {
+        eTimeString = "am";
+    };
+
+
+    let formatedSTime = sList[0].padStart(2, '0') + ":" + sList[1] + " " + sTimeString;
+    let formatedETime = eList[0].padStart(2, '0') + ":" + eList[1] + " " + eTimeString;
+
+    let output = formatedSTime + " - " + formatedETime;
     return output
 }
 

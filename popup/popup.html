@@ -4,12 +4,65 @@
   <meta charset="UTF-8">
   <title>Markham Drop-In Slot Notifier</title>
   <link rel="stylesheet" href="popup.css">
+  <style>
+    .container {
+      width: 300px;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+    .form-group {
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    select, input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      opacity: 0.8;
+    }
+    #stop-btn {
+      background-color: #f44336;
+    }
+    #start-btn {
+      background-color: #2196F3;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h1>Slot Notifier</h1>
     
     <form id="preferences-form">
+      <div class="form-group">
+        <label for="location">Location:</label>
+        <select id="location" required>
+          <option value="">Select a location</option>
+          <option value="Aaniin Community Centre">Aaniin Community Centre</option>
+          <option value="Angus Glen Community Centre">Angus Glen Community Centre</option>
+          <option value="Armadale Community Centre">Armadale Community Centre</option>
+          <option value="Centennial Community Centre">Centennial Community Centre</option>
+          <option value="Cornell Community Centre">Cornell Community Centre</option>
+          <option value="Milliken Mills Community Centre">Milliken Mills Community Centre</option>
+          
+        </select>
+      </div>
+
       <div class="form-group">
         <label for="sport-type">Sport:</label>
         <select id="sport-type" required>
@@ -34,8 +87,9 @@
         <input type="time" id="end-time" required>
       </div>
 
-      <button type="submit" id="save-btn">Save Preferences</button>
-      <button type="stop" id="stop-btn">Stop Watch</button>
+      <button type="button" id="save-btn">Save Preferences</button>
+      <button type="button" id="start-btn">Start Watch</button>
+      <button type="button" id="stop-btn">Stop Watch</button>
     </form>
   </div>
 
