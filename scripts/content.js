@@ -1,4 +1,3 @@
-var found;
 chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'], (data) => {
     wantedStartTime = data.startTime;
     wantedEndTime = data.endTime;
@@ -42,13 +41,14 @@ chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'
             };
         };
     };
+    if (found === false) {
+        chrome.runtime.sendMessage({
+            action: "noSlotsFound"
+        });
+    }
 });
 
-if (found === false) {
-    chrome.runtime.sendMessage({
-        action: "noSlotsFound"
-    });
-}
+
 
 function formatDate(date) {
     const words = date.split('-');

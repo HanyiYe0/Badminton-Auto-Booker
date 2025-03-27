@@ -9,7 +9,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "buttonOn") {
     // Create alarm
     chrome.alarms.create('spot-open-alarm', {
-      periodInMinutes: 1,
+      periodInMinutes: 2,
       when: Date.now()
     });    
   } else if (request.action === "buttonOff") {
@@ -17,11 +17,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       chrome.alarms.clear('spot-open-alarm');
   } else if (request.action === "slotOpen") {
     displaySlotAvailable();
+    chrome.tabs.remove(tempTab.id);
   } else if (request.action === "noSlotsFound") {
-    console.log("here");
-    if (tempTab?.id) {
       chrome.tabs.remove(tempTab.id);
-    }
   } else if (request.action === "slotAvailable") {
     chrome.notifications.create({
         type: "basic",
@@ -74,5 +72,12 @@ async function getSlotsAvailable() {
       target: { tabId: tab.id },
       files: ["scripts/content.js"],
     });
-  }, 2000);
+
+    if (chrome.runtime.lastError) {
+      // Ignore "Frame was removed" if we already got the data
+      if (!chrome.runtime.lastError.message.includes("Frame was removed")) {
+        console.error("Real error:", chrome.runtime.lastError);
+      }
+    }
+  }, 3000);
 }
