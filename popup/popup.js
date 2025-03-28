@@ -15,6 +15,7 @@ document.getElementById('save-btn').addEventListener('click', async (e) => {
 
 document.getElementById('start-btn').addEventListener('click', async (e) => {
     e.preventDefault();
+    
     await chrome.action.setBadgeText({
         text: "ON"
     });
