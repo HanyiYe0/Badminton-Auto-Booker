@@ -1,5 +1,6 @@
 let tempTab;
 let state;
+let autoLogin;
 const activeContentScripts = new Set();
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -12,6 +13,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       periodInMinutes: 2,
       when: Date.now()
     });    
+    if (request.type === 'autoLogin') {
+      autoLogin = true;
+      console.log('autologin');
+    } else if (request.type === 'noAutoLogin') {
+      autoLogin = false;
+      console.log('no auto login');
+    }
+
   } else if (request.action === "buttonOff") {
       // Remove the alarm
       chrome.alarms.clear('spot-open-alarm');

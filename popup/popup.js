@@ -6,9 +6,11 @@ document.getElementById('save-btn').addEventListener('click', async (e) => {
     const startTime = document.getElementById('start-time').value;
     const endTime = document.getElementById('end-time').value;
     const location = document.getElementById('location').value;
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
 
     // Save to Chrome storage
-    await chrome.storage.sync.set({ sportType, date, startTime, endTime, location }, () => {
+    await chrome.storage.sync.set({ sportType, date, startTime, endTime, location, username, password }, () => {
         console.log('Preferences saved!');
     });
 });
@@ -19,10 +21,20 @@ document.getElementById('start-btn').addEventListener('click', async (e) => {
     await chrome.action.setBadgeText({
         text: "ON"
     });
-    // Do the button on stuff at background.js
-    await chrome.runtime.sendMessage( {
-        action: "buttonOn"
-    });
+    // if checkbox is checked, perform auto-login
+    if (document.getElementById("auto-book").checked) {
+        await chrome.runtime.sendMessage( {
+            action: "buttonOn",
+            type: "autoLogin"
+        });
+    } else {
+        // Do the button on stuff at background.js
+        await chrome.runtime.sendMessage( {
+            action: "buttonOn",
+            type: "noAutoLogin"
+        });
+    }
+    
   });
 
 document.getElementById('stop-btn').addEventListener('click', async (e) => {
@@ -38,11 +50,13 @@ document.getElementById('stop-btn').addEventListener('click', async (e) => {
 });
   
 // Load saved preferences on popup open
-chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'], (data) => {
+chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location', 'username', 'password'], (data) => {
     if (data.sportType) document.getElementById('sport-type').value = data.sportType;
     if (data.date) document.getElementById('date').value = data.date;
     if (data.startTime) document.getElementById('start-time').value = data.startTime;
     if (data.endTime) document.getElementById('end-time').value = data.endTime;
     if (data.location) document.getElementById('location').value = data.location;
+    if (data.username) document.getElementById('username').value = data.username;
+    if (data.password) document.getElementById('password').value = data.password;
 });
 
