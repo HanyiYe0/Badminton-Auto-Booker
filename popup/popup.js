@@ -8,9 +8,10 @@ document.getElementById('save-btn').addEventListener('click', async (e) => {
     const location = document.getElementById('location').value;
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const autoLogin = "autologin";
 
     // Save to Chrome storage
-    await chrome.storage.sync.set({ sportType, date, startTime, endTime, location, username, password }, () => {
+    await chrome.storage.sync.set({ sportType, date, startTime, endTime, location, username, password, autoLogin }, () => {
         console.log('Preferences saved!');
     });
 });
@@ -50,7 +51,7 @@ document.getElementById('stop-btn').addEventListener('click', async (e) => {
 });
   
 // Load saved preferences on popup open
-chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location', 'username', 'password'], (data) => {
+chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location', 'username', 'password', 'autoLogin'], (data) => {
     if (data.sportType) document.getElementById('sport-type').value = data.sportType;
     if (data.date) document.getElementById('date').value = data.date;
     if (data.startTime) document.getElementById('start-time').value = data.startTime;
@@ -58,5 +59,6 @@ chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'
     if (data.location) document.getElementById('location').value = data.location;
     if (data.username) document.getElementById('username').value = data.username;
     if (data.password) document.getElementById('password').value = data.password;
+    if (data.autoLogin) document.getElementById('auto-book').checked = true;
 });
 

@@ -22,6 +22,7 @@ chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'
         };
         // if date is correct, get all the activities under that date
         if (isDate && rows[i].classList.contains('bm-class-row')) {
+            console.log(rows[i].textContent);
             // check if the activity is correct
             if (rows[i].textContent.includes(activity)) {
                 // check if time is correct
@@ -31,6 +32,7 @@ chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'
                         // check if slot open
                         console.log(rows[i].textContent);
                         buttonId = rows[i].querySelector('input[type="button"]').id;
+                        console.log(buttonId);
                         if (rows[i].textContent.includes("Register")) {
                             chrome.runtime.sendMessage({
                                 action: "slotOpen",

@@ -26,6 +26,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       chrome.alarms.clear('spot-open-alarm');
   } else if (request.action === "slotOpen") {
     displaySlotAvailable();
+    if (autoLogin) {
+      getAndBookSlotAvailable(request.type);
+    }
     console.log(request.type);
 
     //chrome.tabs.remove(tempTab.id);
@@ -51,6 +54,16 @@ function goToBooking() {
   });
 };
 
+chrome.tabs.onUpdated.addListener( (tabId, changeInfo, tab) => {
+  if (tabId == tempTab.id) {
+    setTimeout(() => {
+      chrome.scripting.executeScript({
+        target: { tabId: tempTab.id},
+        files: ["scripts/autologin.js"],
+      });
+    }, 2000);
+  }
+});
 
 function displaySlotAvailable() {
   chrome.notifications.create("spot-open-notification", {
@@ -62,21 +75,17 @@ function displaySlotAvailable() {
 };
 
 
-async function getAndBookSlotAvailable() {
-  const tab = await chrome.tabs.create({
-    url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=491a603e-4043-4ab6-b04d-8fac51edbcfc&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False",
-    active: false,
-    pinned: true,
-  });
-  tempTab = tab;
-  setTimeout(() => {
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id},
-      files: ["scripts/aulogin.js"],
-    });
-  }, 1000);
-
-
+async function getAndBookSlotAvailable(buttonId) {
+  await chrome.storage.local.set({ buttonIdToUse: buttonId });
+  // do twice
+  for (i = 0; i < 2; i++) {
+    setTimeout(() => {
+      chrome.scripting.executeScript({
+        target: { tabId: tempTab.id},
+        files: ["scripts/autologin.js"],
+      });
+    }, 1000);
+  };
 }
 
 async function getSlotsAvailable() {
@@ -94,5 +103,5 @@ async function getSlotsAvailable() {
       target: { tabId: tab.id },
       files: ["scripts/content.js"],
     });
-  }, 3000);
+  }, 5000);
 }
