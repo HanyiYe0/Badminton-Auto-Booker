@@ -32,16 +32,26 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log(request.type);
   } else if (request.action === "noSlotsFound") {
       chrome.tabs.remove(tempTab.id);
-  } else if (request.action === "checkout") {
+  } else if (request.action === "beforecheckout") {
     chrome.tabs.onUpdated.removeListener(tabUpdatedListener);
+  } else if (request.action === "checkout") {
     setTimeout(() => {
       chrome.scripting.executeScript({
         target: { tabId: tempTab.id},
         files: ["scripts/autologin.js"],
       });
-    }, 6000);
+    }, 5000);
+  } else if (request.action === "updateTab") {
+    chrome.tabs.update(tempTab.id, { url: request.url });
+    setTimeout(() => {
+      chrome.scripting.executeScript({
+        target: { tabId: tempTab.id},
+        files: ["scripts/autologin.js"],
+      });
+    }, 5000);
   }
 });
+
 
 // when an alarm is created 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
@@ -78,7 +88,7 @@ async function getAndBookSlotAvailable(buttonId) {
       target: { tabId: tempTab.id},
       files: ["scripts/autologin.js"],
     });
-  }, 2000);
+  }, 0);
 }
 
 async function getSlotsAvailable() {
@@ -99,7 +109,6 @@ async function getSlotsAvailable() {
   }, 4000);
 }
 
-
 function tabUpdatedListener(tabId, changeInfo, tab) {
   if (changeInfo.status === 'complete') {
     if (tabId == tempTab?.id) {
@@ -113,3 +122,9 @@ function tabUpdatedListener(tabId, changeInfo, tab) {
     console.log(`Tab ${tabId} finished loading.`);
   }
 }
+
+chrome.webNavigation.onBeforeNavigate.addListener((details) => {
+  if (details.url.includes("MemberCheckout?shoppingCartKey")) {
+    console.log("Redirecting to:", details.url);
+  }
+});

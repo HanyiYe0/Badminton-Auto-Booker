@@ -20,20 +20,19 @@ chrome.storage.local.get(['buttonIdToUse'], (result) => {
     // Next confirmation page
     nextButton2 = document.querySelector('[title="Add to Cart"]');
     if (nextButton2) {
+        chrome.runtime.sendMessage({action: "beforecheckout"});
         nextButton2.click();
         chrome.runtime.sendMessage({action: "checkout"});
     }
-
     // Comfirm Payment Page
     creditCardRadio = document.querySelector('div.payment-radio input[type="radio"]');
     if (creditCardRadio) {
-        creditCardRadio.click();
+        //creditCardRadio.click();
     }
     purchaseButton = document.querySelector('button.process-now');
     if (purchaseButton) {
-        purchaseButton.click();
+        //purchaseButton.click();
     }
-
   });
 
 chrome.storage.sync.get(['username', 'password'], (data) => {
@@ -48,3 +47,12 @@ chrome.storage.sync.get(['username', 'password'], (data) => {
         loginButton.click();
     };
 });
+
+// Run in console on the parent page
+const iframe = document.querySelector('iframe.online-store');
+if (iframe) {
+  console.log('Real checkout URL:', iframe.src);
+
+  chrome.runtime.sendMessage({ action: "updateTab", url: iframe.src });
+}
+
