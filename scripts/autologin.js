@@ -6,12 +6,45 @@ chrome.storage.local.get(['buttonIdToUse'], (result) => {
         activityInfo.click();
     }
     // If at the activity info page wait for page to load and then book
-    register_button = document.getElementById('bookEventButton');
-    if (register_button) {
-        register_button.click();
+    registerButton = document.getElementById('bookEventButton');
+    if (registerButton) {
+        registerButton.click();
     }
+    
+    // If at the confirmation page
+    nextButton1 = document.querySelector('.next-button-container');
+    if (nextButton1) {
+        nextButton1.click()
+    }
+
+    // Next confirmation page
+    nextButton2 = document.querySelector('[title="Add to Cart"]');
+    if (nextButton2) {
+        nextButton2.click();
+        chrome.runtime.sendMessage({action: "checkout"});
+    }
+
+    // Comfirm Payment Page
+    creditCardRadio = document.querySelector('div.payment-radio input[type="radio"]');
+    if (creditCardRadio) {
+        creditCardRadio.click();
+    }
+    purchaseButton = document.querySelector('button.process-now');
+    if (purchaseButton) {
+        purchaseButton.click();
+    }
+
   });
 
-  chrome.storage.sync.get(['username', 'password'], (data) => {
+chrome.storage.sync.get(['username', 'password'], (data) => {
     // If at the login page, use the username and password to log into the account
+    usernameBox = document.getElementById('textBoxUsername');
+    passwordBox = document.getElementById('textBoxPassword');
+    loginButton = document.getElementById('buttonLogin');
+    // Use username and password
+    if (usernameBox && passwordBox && loginButton) {
+        usernameBox.value = data.username;
+        passwordBox.value = data.password;
+        loginButton.click();
+    };
 });

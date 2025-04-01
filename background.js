@@ -5,8 +5,6 @@ const activeContentScripts = new Set();
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("Received message:", request); // Log the entire message object
-
-  
   if (request.action === "buttonOn") {
     // Create alarm
     chrome.alarms.create('spot-open-alarm', {
@@ -28,13 +26,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     displaySlotAvailable();
     if (autoLogin) {
       getAndBookSlotAvailable(request.type);
+    } else {
+      chrome.tabs.remove(tempTab.id);
     }
     console.log(request.type);
-
-    //chrome.tabs.remove(tempTab.id);
   } else if (request.action === "noSlotsFound") {
-      //chrome.tabs.remove(tempTab.id);
-  }   
+      chrome.tabs.remove(tempTab.id);
+  } else if (request.action === "checkout") {
+    chrome.tabs.onUpdated.removeListener(tabUpdatedListener);
+    setTimeout(() => {
+      chrome.scripting.executeScript({
+        target: { tabId: tempTab.id},
+        files: ["scripts/autologin.js"],
+      });
+    }, 6000);
+  }
 });
 
 // when an alarm is created 
@@ -54,17 +60,6 @@ function goToBooking() {
   });
 };
 
-chrome.tabs.onUpdated.addListener( (tabId, changeInfo, tab) => {
-  if (tabId == tempTab.id) {
-    setTimeout(() => {
-      chrome.scripting.executeScript({
-        target: { tabId: tempTab.id},
-        files: ["scripts/autologin.js"],
-      });
-    }, 2000);
-  }
-});
-
 function displaySlotAvailable() {
   chrome.notifications.create("spot-open-notification", {
       type: "basic",
@@ -77,15 +72,13 @@ function displaySlotAvailable() {
 
 async function getAndBookSlotAvailable(buttonId) {
   await chrome.storage.local.set({ buttonIdToUse: buttonId });
-  // do twice
-  for (i = 0; i < 2; i++) {
-    setTimeout(() => {
-      chrome.scripting.executeScript({
-        target: { tabId: tempTab.id},
-        files: ["scripts/autologin.js"],
-      });
-    }, 1000);
-  };
+  chrome.tabs.onUpdated.addListener(tabUpdatedListener);
+  setTimeout(() => {
+    chrome.scripting.executeScript({
+      target: { tabId: tempTab.id},
+      files: ["scripts/autologin.js"],
+    });
+  }, 2000);
 }
 
 async function getSlotsAvailable() {
@@ -103,5 +96,20 @@ async function getSlotsAvailable() {
       target: { tabId: tab.id },
       files: ["scripts/content.js"],
     });
-  }, 5000);
+  }, 4000);
+}
+
+
+function tabUpdatedListener(tabId, changeInfo, tab) {
+  if (changeInfo.status === 'complete') {
+    if (tabId == tempTab?.id) {
+      setTimeout(() => {
+        chrome.scripting.executeScript({
+          target: { tabId: tempTab.id},
+          files: ["scripts/autologin.js"],
+        });
+      }, 2000);
+    }
+    console.log(`Tab ${tabId} finished loading.`);
+  }
 }

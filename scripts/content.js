@@ -22,7 +22,7 @@ chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'
         };
         // if date is correct, get all the activities under that date
         if (isDate && rows[i].classList.contains('bm-class-row')) {
-            console.log(rows[i].textContent);
+            //console.log(rows[i].textContent);
             // check if the activity is correct
             if (rows[i].textContent.includes(activity)) {
                 // check if time is correct
@@ -90,8 +90,11 @@ function formateTime(sTime, eTime) {
     let eList = eTime.split(':');
     let sTimeString;
     let eTimeString;
-    if (Number(sList[0]) >= 12) {
+    if (Number(sList[0]) > 12) {
         sList[0] = (Number(sList[0]) - 12).toString()
+        sTimeString = "pm";
+    } else if (Number(sList[0]) === 12){
+        sList[0] = sList[0].toString()
         sTimeString = "pm";
     } else {
         sTimeString = "am";
@@ -99,6 +102,9 @@ function formateTime(sTime, eTime) {
 
     if (Number(eList[0]) >= 12) {
         eList[0] = (Number(eList[0]) - 12).toString()
+        eTimeString = "pm";
+    } else if (Number(eList[0]) === 12){
+        eList[0] = eList[0].toString()
         eTimeString = "pm";
     } else {
         eTimeString = "am";
