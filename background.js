@@ -24,6 +24,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       chrome.alarms.clear('spot-open-alarm');
   } else if (request.action === "slotOpen") {
     displaySlotAvailable();
+    chrome.alarms.clear('spot-open-alarm');
+    chrome.action.setBadgeText({
+      text: "OFF"
+    });
     if (autoLogin) {
       getAndBookSlotAvailable(request.type);
     } else {
@@ -49,6 +53,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         files: ["scripts/autologin.js"],
       });
     }, 5000);
+  } else if (request.action === "finish") {
+    // once done remove the tab and remove the alarm
+    chrome.tabs.remove(tempTab.id)
+    chrome.alarms.clear('spot-open-alarm');
+    chrome.action.setBadgeText({
+      text: "OFF"
+    });
   }
 });
 
@@ -106,7 +117,7 @@ async function getSlotsAvailable() {
       target: { tabId: tab.id },
       files: ["scripts/content.js"],
     });
-  }, 4000);
+  }, 5000);
 }
 
 function tabUpdatedListener(tabId, changeInfo, tab) {

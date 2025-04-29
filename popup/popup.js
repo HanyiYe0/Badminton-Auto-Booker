@@ -8,7 +8,7 @@ document.getElementById('save-btn').addEventListener('click', async (e) => {
     const location = document.getElementById('location').value;
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    const autoLogin = "autologin";
+    const autoLogin = document.getElementById('auto-book').checked;
 
     // Save to Chrome storage
     await chrome.storage.sync.set({ sportType, date, startTime, endTime, location, username, password, autoLogin }, () => {
@@ -18,7 +18,16 @@ document.getElementById('save-btn').addEventListener('click', async (e) => {
 
 document.getElementById('start-btn').addEventListener('click', async (e) => {
     e.preventDefault();
-    
+    // Store all the info from the form
+    const sportType = document.getElementById('sport-type').value;
+    const date = document.getElementById('date').value;
+    const startTime = document.getElementById('start-time').value;
+    const endTime = document.getElementById('end-time').value;
+    const location = document.getElementById('location').value;
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const autoLogin = document.getElementById('auto-book').checked;
+
     await chrome.action.setBadgeText({
         text: "ON"
     });
@@ -35,7 +44,11 @@ document.getElementById('start-btn').addEventListener('click', async (e) => {
             type: "noAutoLogin"
         });
     }
-    
+
+    // Save to Chrome storage
+    await chrome.storage.sync.set({ sportType, date, startTime, endTime, location, username, password, autoLogin }, () => {
+        console.log('Preferences saved!');
+    });
   });
 
 document.getElementById('stop-btn').addEventListener('click', async (e) => {
@@ -59,6 +72,6 @@ chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'
     if (data.location) document.getElementById('location').value = data.location;
     if (data.username) document.getElementById('username').value = data.username;
     if (data.password) document.getElementById('password').value = data.password;
-    if (data.autoLogin) document.getElementById('auto-book').checked = true;
+    if (data.autoLogin) document.getElementById('auto-book').checked = data.autoLogin;
 });
 

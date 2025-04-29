@@ -27,11 +27,12 @@ chrome.storage.local.get(['buttonIdToUse'], (result) => {
     // Comfirm Payment Page
     creditCardRadio = document.querySelector('div.payment-radio input[type="radio"]');
     if (creditCardRadio) {
-        //creditCardRadio.click();
+        creditCardRadio.click();
     }
     purchaseButton = document.querySelector('button.process-now');
     if (purchaseButton) {
-        //purchaseButton.click();
+        purchaseButton.click();
+        chrome.runtime.sendMessage({action: "finish"});
     }
   });
 
