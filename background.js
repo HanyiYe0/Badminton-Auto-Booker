@@ -6,12 +6,6 @@ const activeContentScripts = new Set();
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("Received message:", request); // Log the entire message object
   if (request.action === "buttonOn") {
-    chrome.storage.sync.get(['emailNotification'], (data) => {
-      if (sendNotification) {
-        sendEmailNotification();
-      }
-    })
-
     // Create alarm
     chrome.alarms.create('spot-open-alarm', {
       periodInMinutes: 2,
@@ -31,12 +25,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if (request.action === "slotOpen") {
     displaySlotAvailable();
     chrome.storage.sync.get(['emailNotification'], (data) => {
-      if (sendNotification) {
+      if (data.emailNotification) {
         sendEmailNotification();
       }
-    })
-
-    
+    });
     chrome.alarms.clear('spot-open-alarm');
     chrome.action.setBadgeText({
       text: "OFF"
@@ -106,6 +98,16 @@ function displaySlotAvailable() {
 function sendEmailNotification() {
   chrome.storage.sync.get(['email'], (data) => {
     var emailTo = data.email
+
+    fetch('https://notificationbackendserver.up.railway.app/send-slot-open-notification', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: emailTo, // Get this from storage
+      })
+    });
   })
 }
 
