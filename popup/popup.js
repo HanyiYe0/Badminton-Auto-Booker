@@ -9,9 +9,11 @@ document.getElementById('save-btn').addEventListener('click', async (e) => {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     const autoLogin = document.getElementById('auto-book').checked;
+    const emailNotification = document.getElementById('email-notification').checked;
+    const email = document.getElementById('email').value;
 
     // Save to Chrome storage
-    await chrome.storage.sync.set({ sportType, date, startTime, endTime, location, username, password, autoLogin }, () => {
+    await chrome.storage.sync.set({ sportType, date, startTime, endTime, location, username, password, autoLogin, emailNotification, email }, () => {
         console.log('Preferences saved!');
     });
 });
@@ -27,6 +29,8 @@ document.getElementById('start-btn').addEventListener('click', async (e) => {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     const autoLogin = document.getElementById('auto-book').checked;
+    const emailNotification = document.getElementById('email-notification').checked;
+    const email = document.getElementById('email').value;
 
     await chrome.action.setBadgeText({
         text: "ON"
@@ -46,7 +50,7 @@ document.getElementById('start-btn').addEventListener('click', async (e) => {
     }
 
     // Save to Chrome storage
-    await chrome.storage.sync.set({ sportType, date, startTime, endTime, location, username, password, autoLogin }, () => {
+    await chrome.storage.sync.set({ sportType, date, startTime, endTime, location, username, password, autoLogin, emailNotification, email }, () => {
         console.log('Preferences saved!');
     });
   });
@@ -64,7 +68,7 @@ document.getElementById('stop-btn').addEventListener('click', async (e) => {
 });
   
 // Load saved preferences on popup open
-chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location', 'username', 'password', 'autoLogin'], (data) => {
+chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location', 'username', 'password', 'autoLogin', 'emailNotification', 'email'], (data) => {
     if (data.sportType) document.getElementById('sport-type').value = data.sportType;
     if (data.date) document.getElementById('date').value = data.date;
     if (data.startTime) document.getElementById('start-time').value = data.startTime;
@@ -73,5 +77,6 @@ chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'
     if (data.username) document.getElementById('username').value = data.username;
     if (data.password) document.getElementById('password').value = data.password;
     if (data.autoLogin) document.getElementById('auto-book').checked = data.autoLogin;
+    if (data.emailNotification) document.getElementById('email-notification').checked = data.emailNotification;
+    if (data.email) document.getElementById('email').value = data.email;
 });
-
