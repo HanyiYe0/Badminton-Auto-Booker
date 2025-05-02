@@ -24,6 +24,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       chrome.alarms.clear('spot-open-alarm');
   } else if (request.action === "slotOpen") {
     displaySlotAvailable();
+    // Email Notification
     chrome.storage.sync.get(['emailNotification'], (data) => {
       if (data.emailNotification) {
         sendEmailNotification();
@@ -99,14 +100,13 @@ function sendEmailNotification() {
   chrome.storage.sync.get(['email'], (data) => {
     var emailTo = data.email
 
-    fetch('https://notificationbackendserver.up.railway.app/send-slot-open-notification', {
+    fetch('https://script.google.com/macros/s/AKfycbxIFk-K4FoOL5fjjiMu3Gs-nnyeXmcxYKTsYhbGBqbkFY4PqIFw9Qk8NzshjgC534LWWw/exec', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({
-        email: emailTo, // Get this from storage
-      })
+        to: emailTo,
+        subject: 'Spot Open!',
+        body: 'A slot has opened up. Visit to book: https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=491a603e-4043-4ab6-b04d-8fac51edbcfc&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False'
+    })
     });
   })
 }
