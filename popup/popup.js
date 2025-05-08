@@ -11,9 +11,11 @@ document.getElementById('save-btn').addEventListener('click', async (e) => {
     const autoLogin = document.getElementById('auto-book').checked;
     const emailNotification = document.getElementById('email-notification').checked;
     const email = document.getElementById('email').value;
+    const smsNotification = document.getElementById('sms-notification').checked;
+    const number = document.getElementById('phone-number').value
 
     // Save to Chrome storage
-    await chrome.storage.sync.set({ sportType, date, startTime, endTime, location, username, password, autoLogin, emailNotification, email }, () => {
+    await chrome.storage.sync.set({ sportType, date, startTime, endTime, location, username, password, autoLogin, emailNotification, email, smsNotification, number }, () => {
         console.log('Preferences saved!');
     });
 });
@@ -31,6 +33,8 @@ document.getElementById('start-btn').addEventListener('click', async (e) => {
     const autoLogin = document.getElementById('auto-book').checked;
     const emailNotification = document.getElementById('email-notification').checked;
     const email = document.getElementById('email').value;
+    const smsNotification = document.getElementById('sms-notification').checked;
+    const number = document.getElementById('phone-number').value
 
     await chrome.action.setBadgeText({
         text: "ON"
@@ -50,7 +54,7 @@ document.getElementById('start-btn').addEventListener('click', async (e) => {
     }
 
     // Save to Chrome storage
-    await chrome.storage.sync.set({ sportType, date, startTime, endTime, location, username, password, autoLogin, emailNotification, email }, () => {
+    await chrome.storage.sync.set({ sportType, date, startTime, endTime, location, username, password, autoLogin, emailNotification, email, smsNotification, number }, () => {
         console.log('Preferences saved!');
     });
   });
@@ -68,7 +72,7 @@ document.getElementById('stop-btn').addEventListener('click', async (e) => {
 });
   
 // Load saved preferences on popup open
-chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location', 'username', 'password', 'autoLogin', 'emailNotification', 'email'], (data) => {
+chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location', 'username', 'password', 'autoLogin', 'emailNotification', 'email', 'smsNotification', 'number'], (data) => {
     if (data.sportType) document.getElementById('sport-type').value = data.sportType;
     if (data.date) document.getElementById('date').value = data.date;
     if (data.startTime) document.getElementById('start-time').value = data.startTime;
@@ -79,4 +83,20 @@ chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'
     if (data.autoLogin) document.getElementById('auto-book').checked = data.autoLogin;
     if (data.emailNotification) document.getElementById('email-notification').checked = data.emailNotification;
     if (data.email) document.getElementById('email').value = data.email;
+    if (data.smsNotification) document.getElementById('sms-notification').checked = data.smsNotification;
+    if (data.number) document.getElementById('phone-number').value = data.number
 });
+
+
+
+// Send sms notification
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.type === "send-sms") {
+        var numberTo = request.number
+        const iframe = document.createElement('iframe');
+        iframe.src = "https://www.textnow.com/messaging";
+        //iframe.style.display = 'none'; // Hide the iframe
+        document.body.appendChild(iframe);
+    }
+
+})

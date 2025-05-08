@@ -6,6 +6,7 @@ const activeContentScripts = new Set();
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("Received message:", request); // Log the entire message object
   if (request.action === "buttonOn") {
+
     // Create alarm
     chrome.alarms.create('spot-open-alarm', {
       periodInMinutes: 2,
@@ -22,6 +23,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if (request.action === "buttonOff") {
       // Remove the alarm
       chrome.alarms.clear('spot-open-alarm');
+
   } else if (request.action === "slotOpen") {
     displaySlotAvailable();
     // Email Notification
@@ -30,6 +32,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendEmailNotification();
       }
     });
+    // SMS Notification
+    chrome.storage.sync.get(['smsNotification'], (data) => {
+      if (data.smsNotification) {
+        sendSMSNotification();
+      }
+    })
     chrome.alarms.clear('spot-open-alarm');
     chrome.action.setBadgeText({
       text: "OFF"
@@ -40,10 +48,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       chrome.tabs.remove(tempTab.id);
     }
     console.log(request.type);
+
   } else if (request.action === "noSlotsFound") {
-      chrome.tabs.remove(tempTab.id);
+    // SMS Notification
+    chrome.storage.sync.get(['smsNotification'], (data) => {
+      if (data.smsNotification) {
+        sendSMSNotification();
+        console.log("Here")
+      }
+    })
+      //chrome.tabs.remove(tempTab.id);
+
   } else if (request.action === "beforecheckout") {
     chrome.tabs.onUpdated.removeListener(tabUpdatedListener);
+
   } else if (request.action === "checkout") {
     setTimeout(() => {
       chrome.scripting.executeScript({
@@ -51,6 +69,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         files: ["scripts/autologin.js"],
       });
     }, 5000);
+
   } else if (request.action === "updateTab") {
     chrome.tabs.update(tempTab.id, { url: request.url });
     setTimeout(() => {
@@ -59,6 +78,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         files: ["scripts/autologin.js"],
       });
     }, 5000);
+
   } else if (request.action === "finish") {
     // once done remove the tab and remove the alarm
     chrome.tabs.remove(tempTab.id)
@@ -106,10 +126,50 @@ function sendEmailNotification() {
         to: emailTo,
         subject: 'Spot Open!',
         body: 'A slot has opened up. Visit to book: https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=491a603e-4043-4ab6-b04d-8fac51edbcfc&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False'
-    })
+      })
     });
   })
 }
+
+
+
+
+
+
+function sendSMSNotification() {
+  chrome.cookies.set({
+    "url": "https://www.textnow.com/messaging",
+    "name": "connect.sid",
+    "value": "s%3ADvxFBkO1ZjLIqjVHa0RYJxE4H-RQWDGf.%2FsaOO%2B4ugpx6ND1On3j%2FMwSDKS2heZYsFxJ%2ByPRP88Q",
+    "domain": ".textnow.com",
+    "path": "/"
+  }
+  );
+  chrome.cookies.set({
+    "url": "https://www.textnow.com/messaging",
+    "name": "_csrf",
+    "value": "s%3AIcMno0d52mFnFyDlBl5PwqvA.kKsKwR8ovQM5WzSKAx2DEHes585B2cU8jt8kUnr7wxo",
+    "domain": ".textnow.com",
+    "path": "/"
+  }
+  );
+  chrome.tabs.update(tempTab.id, {
+    url: "https://www.textnow.com/messaging"
+  });
+
+  setTimeout(() => {
+    chrome.scripting.executeScript({
+      target: { tabId: tempTab.id},
+      files: ["scripts/sendsms.js"],
+    });
+  }, 5000);
+  
+}
+
+
+
+
+
 
 async function getAndBookSlotAvailable(buttonId) {
   await chrome.storage.local.set({ buttonIdToUse: buttonId });
