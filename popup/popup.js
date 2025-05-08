@@ -86,17 +86,3 @@ chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'
     if (data.smsNotification) document.getElementById('sms-notification').checked = data.smsNotification;
     if (data.number) document.getElementById('phone-number').value = data.number
 });
-
-
-
-// Send sms notification
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.type === "send-sms") {
-        var numberTo = request.number
-        const iframe = document.createElement('iframe');
-        iframe.src = "https://www.textnow.com/messaging";
-        //iframe.style.display = 'none'; // Hide the iframe
-        document.body.appendChild(iframe);
-    }
-
-})

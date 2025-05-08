@@ -86,6 +86,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     chrome.action.setBadgeText({
       text: "OFF"
     });
+  } else if (request.action === "sent-sms") {
+    chrome.tabs.remove(tempTab.id);
+    chrome.cookies.remove({
+      "url": "https://www.textnow.com/messaging",
+      "name": "connect.sid",
+      "storeId": "0",
+    }
+    );
+    chrome.cookies.remove({
+      "url": "https://www.textnow.com/messaging",
+      "name": "_csrf",
+      "storeId": "0",
+    }
+    );
   }
 });
 
@@ -156,7 +170,29 @@ function sendSMSNotification() {
   chrome.tabs.update(tempTab.id, {
     url: "https://www.textnow.com/messaging"
   });
-
+  chrome.scripting.executeScript({
+    target: { tabId: tempTab.id},
+    files: ["scripts/setoverlay.js"],
+  })
+  setTimeout(() => {
+    chrome.scripting.executeScript({
+      target: { tabId: tempTab.id},
+      files: ["scripts/setoverlay.js"],
+    })
+  }, 1000);
+  setTimeout(() => {
+    chrome.scripting.executeScript({
+      target: { tabId: tempTab.id},
+      files: ["scripts/setoverlay.js"],
+    })
+  }, 1500);
+  setTimeout(() => {
+    chrome.scripting.executeScript({
+      target: { tabId: tempTab.id},
+      files: ["scripts/setoverlay.js"],
+    })
+  }, 2000);
+  
   setTimeout(() => {
     chrome.scripting.executeScript({
       target: { tabId: tempTab.id},
