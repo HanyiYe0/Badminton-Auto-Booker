@@ -33,7 +33,7 @@ chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'
                         console.log(rows[i].textContent);
                         buttonId = rows[i].querySelector('input[type="button"]').id;
                         console.log(buttonId);
-                        if (rows[i].textContent.includes("Register")) {
+                        if (rows[i].textContent.includes("spot(s) left")) {
                             chrome.runtime.sendMessage({
                                 action: "slotOpen",
                                 type: buttonId,

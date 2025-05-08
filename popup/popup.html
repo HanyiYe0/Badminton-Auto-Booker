@@ -63,24 +63,42 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="sport-type">Sport:</label>
-            <select id="sport-type" required>
-              <option value="Badminton">Badminton</option>
-              <option value="Pickleball">Pickleball</option>
-              <option value="Basketball">Basketball</option>
+            <label for="program-type">Program:</label>
+            <select id="program-type" required>
+              <option value="">Select a program</option>
+              <option value="Activities for Age 55+">Activities for Age 55+</option>
+              <option value="Adapted">Adapted</option>
+              <option value="Group Fitness: Cardio">Group Fitness: Cardio</option>
+              <option value="Group Fitness: Mind & Body">Group Fitness: Mind & Body</option>
+              <option value="Group Fitness: Strength Training">Group Fitness: Strength Training</option>
+              <option value="Group Fitness: Total Body Workout">Group Fitness: Total Body Workout</option>
+              <option value="Sensory Room / Inddor Playground">Sensory Room / Inddor Playground</option>
+              <option value="Skating">Skating</option>
+              <option value="Sports & Activities">Sports & Activities</option>
+              <option value="Swimming">Swimming</option>
+              <option value="Tennis Round Robins">Tennis Round Robins</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="activity-type">Activity:</label>
+            <select id="activity-type" required>
+              <option value="">Select an activity</option>
+              <!-- Options will be populated dynamically based on program selection -->
             </select>
           </div>
           <div class="form-group">
             <label for="date">Date:</label>
             <input type="date" id="date" required>
           </div>
-          <div class="form-group">
-            <label for="start-time">Start Time:</label>
-            <input type="time" id="start-time" required>
-          </div>
-          <div class="form-group">
-            <label for="end-time">End Time:</label>
-            <input type="time" id="end-time" required>
+          <div class="form-group time-row">
+            <div class="time-group">
+              <label for="start-time">Start Time:</label>
+              <input type="time" id="start-time" required>
+            </div>
+            <div class="time-group">
+              <label for="end-time">End Time:</label>
+              <input type="time" id="end-time" required>
+            </div>
           </div>
           <!-- Buttons are now inside the right column -->
           <div class="form-group">

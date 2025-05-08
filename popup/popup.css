@@ -33,6 +33,20 @@ h1 {
   gap: 10px;
 }
 
+.time-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.time-group {
+  flex: 1;
+}
+
+.time-group input {
+  width: 100%;
+}
+
 .form-group {
   margin-bottom: 0px;
 }
