@@ -17,9 +17,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     } else if (request.type === 'noAutoLogin') {
       autoLogin = false;
       console.log('no auto login');
-    };
-
-
+    }
   } else if (request.action === "buttonOff") {
       // Remove the alarm
       chrome.alarms.clear('spot-open-alarm');
@@ -65,8 +63,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         target: { tabId: tempTab.id},
         files: ["scripts/autologin.js"],
       });
-      sendEmailNotification("A slot has been booked successfully!")
-      sendSMSNotification("A slot has been booked successfully")
     }, 5000);
 
 
@@ -82,7 +78,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   } else if (request.action === "finish") {
     // once done remove the tab and remove the alarm
-    chrome.tabs.remove(tempTab.id)
+    // Email Notification
+    chrome.storage.sync.get(['emailNotification'], (data) => {
+      if (data.emailNotification) {
+        sendEmailNotification('A slot has been successfully booked.');
+      }
+    });
+    // SMS Notification
+    chrome.storage.sync.get(['smsNotification'], (data) => {
+      if (data.smsNotification) {
+        sendSMSNotification('A slot has been successfully booked.');
+      } else {
+        setTimeout(() => {
+            chrome.tabs.remove(tempTab.id);
+        }, 3000)
+      }
+    })
     chrome.alarms.clear('spot-open-alarm');
     chrome.action.setBadgeText({
       text: "OFF"
@@ -235,11 +246,6 @@ function sendSMSNotification(messageBody) {
   }, 5000);
   
 }
-
-
-
-
-
 
 async function getAndBookSlotAvailable(buttonId) {
   await chrome.storage.local.set({ buttonIdToUse: buttonId });
