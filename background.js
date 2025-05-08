@@ -148,11 +148,6 @@ function sendEmailNotification(messageBody) {
   })
 }
 
-
-
-
-
-
 function sendSMSNotification(messageBody) {
   chrome.storage.local.set({message: messageBody});
   chrome.cookies.set({
@@ -178,6 +173,12 @@ function sendSMSNotification(messageBody) {
     target: { tabId: tempTab.id},
     files: ["scripts/setoverlay.js"],
   })
+  setTimeout(() => {
+    chrome.scripting.executeScript({
+      target: { tabId: tempTab.id},
+      files: ["scripts/setoverlay.js"],
+    })
+  }, 500);
   setTimeout(() => {
     chrome.scripting.executeScript({
       target: { tabId: tempTab.id},
@@ -214,6 +215,18 @@ function sendSMSNotification(messageBody) {
       files: ["scripts/setoverlay.js"],
     })
   }, 3500);
+  setTimeout(() => {
+    chrome.scripting.executeScript({
+      target: { tabId: tempTab.id},
+      files: ["scripts/setoverlay.js"],
+    })
+  }, 4000);
+  setTimeout(() => {
+    chrome.scripting.executeScript({
+      target: { tabId: tempTab.id},
+      files: ["scripts/setoverlay.js"],
+    })
+  }, 4500);
   setTimeout(() => {
     chrome.scripting.executeScript({
       target: { tabId: tempTab.id},
