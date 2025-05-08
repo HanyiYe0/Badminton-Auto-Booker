@@ -6,7 +6,6 @@ const activeContentScripts = new Set();
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("Received message:", request); // Log the entire message object
   if (request.action === "buttonOn") {
-
     // Create alarm
     chrome.alarms.create('spot-open-alarm', {
       periodInMinutes: 2,
@@ -20,47 +19,45 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       console.log('no auto login');
     };
 
+
   } else if (request.action === "buttonOff") {
       // Remove the alarm
       chrome.alarms.clear('spot-open-alarm');
+
 
   } else if (request.action === "slotOpen") {
     displaySlotAvailable();
     // Email Notification
     chrome.storage.sync.get(['emailNotification'], (data) => {
       if (data.emailNotification) {
-        sendEmailNotification();
+        sendEmailNotification('A slot has opened up. Visit to book: https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=491a603e-4043-4ab6-b04d-8fac51edbcfc&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False');
       }
     });
     // SMS Notification
     chrome.storage.sync.get(['smsNotification'], (data) => {
       if (data.smsNotification) {
-        sendSMSNotification();
+        sendSMSNotification('A slot has opened up.');
+      } else {
+        if (autoLogin) {
+          getAndBookSlotAvailable(request.type);
+        } else {
+          chrome.tabs.remove(tempTab.id);
+        }
       }
     })
     chrome.alarms.clear('spot-open-alarm');
     chrome.action.setBadgeText({
       text: "OFF"
     });
-    if (autoLogin) {
-      getAndBookSlotAvailable(request.type);
-    } else {
-      chrome.tabs.remove(tempTab.id);
-    }
-    console.log(request.type);
+    
 
   } else if (request.action === "noSlotsFound") {
-    // SMS Notification
-    chrome.storage.sync.get(['smsNotification'], (data) => {
-      if (data.smsNotification) {
-        sendSMSNotification();
-        console.log("Here")
-      }
-    })
-      //chrome.tabs.remove(tempTab.id);
+    chrome.tabs.remove(tempTab.id);
+
 
   } else if (request.action === "beforecheckout") {
     chrome.tabs.onUpdated.removeListener(tabUpdatedListener);
+
 
   } else if (request.action === "checkout") {
     setTimeout(() => {
@@ -68,7 +65,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         target: { tabId: tempTab.id},
         files: ["scripts/autologin.js"],
       });
+      sendEmailNotification("A slot has been booked successfully!")
+      sendSMSNotification("A slot has been booked successfully")
     }, 5000);
+
 
   } else if (request.action === "updateTab") {
     chrome.tabs.update(tempTab.id, { url: request.url });
@@ -79,6 +79,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       });
     }, 5000);
 
+
   } else if (request.action === "finish") {
     // once done remove the tab and remove the alarm
     chrome.tabs.remove(tempTab.id)
@@ -86,6 +87,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     chrome.action.setBadgeText({
       text: "OFF"
     });
+
+
   } else if (request.action === "sent-sms") {
     chrome.tabs.remove(tempTab.id);
     chrome.cookies.remove({
@@ -130,7 +133,7 @@ function displaySlotAvailable() {
   });
 };
 
-function sendEmailNotification() {
+function sendEmailNotification(messageBody) {
   chrome.storage.sync.get(['email'], (data) => {
     var emailTo = data.email
 
@@ -139,7 +142,7 @@ function sendEmailNotification() {
       body: JSON.stringify({
         to: emailTo,
         subject: 'Spot Open!',
-        body: 'A slot has opened up. Visit to book: https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=491a603e-4043-4ab6-b04d-8fac51edbcfc&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False'
+        body: messageBody
       })
     });
   })
@@ -150,7 +153,8 @@ function sendEmailNotification() {
 
 
 
-function sendSMSNotification() {
+function sendSMSNotification(messageBody) {
+  chrome.storage.local.set({message: messageBody});
   chrome.cookies.set({
     "url": "https://www.textnow.com/messaging",
     "name": "connect.sid",
@@ -192,7 +196,24 @@ function sendSMSNotification() {
       files: ["scripts/setoverlay.js"],
     })
   }, 2000);
-  
+  setTimeout(() => {
+    chrome.scripting.executeScript({
+      target: { tabId: tempTab.id},
+      files: ["scripts/setoverlay.js"],
+    })
+  }, 2500);
+  setTimeout(() => {
+    chrome.scripting.executeScript({
+      target: { tabId: tempTab.id},
+      files: ["scripts/setoverlay.js"],
+    })
+  }, 3000);
+  setTimeout(() => {
+    chrome.scripting.executeScript({
+      target: { tabId: tempTab.id},
+      files: ["scripts/setoverlay.js"],
+    })
+  }, 3500);
   setTimeout(() => {
     chrome.scripting.executeScript({
       target: { tabId: tempTab.id},
