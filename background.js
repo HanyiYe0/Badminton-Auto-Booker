@@ -47,14 +47,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           chrome.storage.sync.set({ running }, () => {
             console.log('Stopped Run');
           });
+          chrome.action.setBadgeText({
+            text: "OFF"
+          });
         }
       })
     }
     chrome.alarms.clear('spot-open-alarm');
-    chrome.action.setBadgeText({
-      text: "OFF"
-    });
-    
 
   } else if (request.action === "noSlotsFound") {
     chrome.tabs.remove(tempTab.id);
@@ -104,14 +103,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         chrome.storage.sync.set({ running }, () => {
           console.log('Stopped Run');
         });
+        chrome.action.setBadgeText({
+          text: "OFF"
+        });
       }
     })
     chrome.alarms.clear('spot-open-alarm');
-    chrome.action.setBadgeText({
-      text: "OFF"
-    });
-    
-    
 
   } else if (request.action === "sent-sms") {
     chrome.tabs.remove(tempTab.id);
@@ -131,6 +128,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const running = false;
     chrome.storage.sync.set({ running }, () => {
       console.log('Stopped Run');
+    });
+    chrome.action.setBadgeText({
+      text: "OFF"
     });
   }
 });
