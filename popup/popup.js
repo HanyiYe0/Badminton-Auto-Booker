@@ -85,7 +85,6 @@ document.getElementById('start-btn').addEventListener('click', async (e) => {
     const running = true;
     document.getElementById("start-btn").disabled = true;
 
-
     await chrome.action.setBadgeText({
         text: "ON"
     });
@@ -317,6 +316,7 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
+// Save disabled button state after closing popup
 chrome.storage.sync.get(['running'], (data) => {
   if (data.running) {
     document.getElementById("start-btn").disabled = true;
@@ -324,3 +324,18 @@ chrome.storage.sync.get(['running'], (data) => {
     document.getElementById("start-btn").disabled = false;
   }
 })
+
+// Update button disabled state while popup is open
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === "sync" && changes.running) {
+    
+    const oldValue = changes.running.oldValue;
+    const newValue = changes.running.newValue;
+    // Only change if it was disabled -> enabled
+    if (oldValue && !newValue) {
+      document.getElementById("start-btn").disabled = false; 
+    }
+    
+  }
+});
+

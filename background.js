@@ -42,6 +42,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           sendSMSNotification('A slot has opened up.');
         } else {
           chrome.tabs.remove(tempTab.id);
+          // Re-enable start watch button
+          const running = false;
+          chrome.storage.sync.set({ running }, () => {
+            console.log('Stopped Run');
+          });
         }
       })
     }
@@ -94,13 +99,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         setTimeout(() => {
             chrome.tabs.remove(tempTab.id);
         }, 5000)
+        // Re-enable start watch button
+        const running = false;
+        chrome.storage.sync.set({ running }, () => {
+          console.log('Stopped Run');
+        });
       }
     })
     chrome.alarms.clear('spot-open-alarm');
     chrome.action.setBadgeText({
       text: "OFF"
     });
-
+    
+    
 
   } else if (request.action === "sent-sms") {
     chrome.tabs.remove(tempTab.id);
@@ -116,6 +127,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       "storeId": "0",
     }
     );
+    // Re-enable start watch button
+    const running = false;
+    chrome.storage.sync.set({ running }, () => {
+      console.log('Stopped Run');
+    });
   }
 });
 
