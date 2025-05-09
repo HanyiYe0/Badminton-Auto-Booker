@@ -24,25 +24,27 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 
   } else if (request.action === "slotOpen") {
-    displaySlotAvailable();
-    // Email Notification
-    chrome.storage.sync.get(['emailNotification'], (data) => {
-      if (data.emailNotification) {
-        sendEmailNotification('A slot has opened up. Visit to book: https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=491a603e-4043-4ab6-b04d-8fac51edbcfc&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False');
-      }
-    });
-    // SMS Notification
-    chrome.storage.sync.get(['smsNotification'], (data) => {
-      if (data.smsNotification) {
-        sendSMSNotification('A slot has opened up.');
-      } else {
-        if (autoLogin) {
-          getAndBookSlotAvailable(request.type);
+    // if auto login, then do auto login stuff and then check whether their is notification enabled
+    if (autoLogin) {
+      getAndBookSlotAvailable(request.type);
+    } else {
+      displaySlotAvailable();
+      // no auto login, just send notification if applicable
+      // Email Notification
+      chrome.storage.sync.get(['emailNotification'], (data) => {
+        if (data.emailNotification) {
+          sendEmailNotification('Slot Open!','A slot has opened up. Visit to book: https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=491a603e-4043-4ab6-b04d-8fac51edbcfc&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False');
+        }
+      });
+      // SMS Notification
+      chrome.storage.sync.get(['smsNotification'], (data) => {
+        if (data.smsNotification) {
+          sendSMSNotification('A slot has opened up.');
         } else {
           chrome.tabs.remove(tempTab.id);
         }
-      }
-    })
+      })
+    }
     chrome.alarms.clear('spot-open-alarm');
     chrome.action.setBadgeText({
       text: "OFF"
@@ -63,7 +65,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         target: { tabId: tempTab.id},
         files: ["scripts/autologin.js"],
       });
-    }, 5000);
+    }, 3000);
 
 
   } else if (request.action === "updateTab") {
@@ -73,25 +75,25 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         target: { tabId: tempTab.id},
         files: ["scripts/autologin.js"],
       });
-    }, 5000);
-
-
+    }, 2000);
   } else if (request.action === "finish") {
     // once done remove the tab and remove the alarm
     // Email Notification
     chrome.storage.sync.get(['emailNotification'], (data) => {
       if (data.emailNotification) {
-        sendEmailNotification('A slot has been successfully booked.');
+        sendEmailNotification('Successful Booking!','A slot has been successfully booked.');
       }
     });
     // SMS Notification
     chrome.storage.sync.get(['smsNotification'], (data) => {
       if (data.smsNotification) {
-        sendSMSNotification('A slot has been successfully booked.');
+        setTimeout(() => {
+          sendSMSNotification('A slot has been successfully booked.');
+        }, 5000)
       } else {
         setTimeout(() => {
             chrome.tabs.remove(tempTab.id);
-        }, 3000)
+        }, 5000)
       }
     })
     chrome.alarms.clear('spot-open-alarm');
@@ -201,7 +203,7 @@ function displaySlotAvailable() {
   });
 };
 
-function sendEmailNotification(messageBody) {
+function sendEmailNotification(messageSubject, messageBody) {
   chrome.storage.sync.get(['email'], (data) => {
     var emailTo = data.email
 
@@ -209,7 +211,7 @@ function sendEmailNotification(messageBody) {
       method: 'POST',
       body: JSON.stringify({
         to: emailTo,
-        subject: 'Spot Open!',
+        subject: messageSubject,
         body: messageBody
       })
     });
@@ -404,7 +406,7 @@ async function getSlotsAvailable() {
         target: { tabId: tab.id },
         files: ["scripts/content.js"],
       });
-    }, 6000);
+    }, 5000);
   })
 }
 

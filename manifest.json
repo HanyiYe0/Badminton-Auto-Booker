@@ -1,6 +1,6 @@
 {
     "name": "Markham Drop-In Auto Booker & Notifier",
-    "description": "Automatically monitor and notify you of available drop-in program slots on PerfectMind.ca. ",
+    "description": "Automatically monitor and notify you of available drop-in program slots on PerfectMind.ca",
     "version": "1.0",
     "manifest_version": 3,
 

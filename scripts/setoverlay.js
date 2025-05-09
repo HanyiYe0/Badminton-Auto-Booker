@@ -14,12 +14,12 @@ overlay.style.fontSize = '2rem';
 overlay.style.fontWeight = 'bold';
 overlay.style.color = '#333';
 var text = document.createElement('div');
-text.textContent = 'Sending SMS...';
+text.textContent = 'Sending SMS. Do not close tab...';
 overlay.appendChild(text);
 document.body.appendChild(overlay);
 
 // Nuclear option: Disable animations on the page
-const style = document.createElement('style');
+var style = document.createElement('style');
 style.id = 'animationKiller';
 style.textContent = `
   * {

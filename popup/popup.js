@@ -38,6 +38,51 @@ document.getElementById('start-btn').addEventListener('click', async (e) => {
     const smsNotification = document.getElementById('sms-notification').checked;
     const number = document.getElementById('phone-number').value
 
+    // Checks for required fields
+    if (!program || !activity || !date || !startTime || !endTime || !location) {
+      // Check required fields
+      if (!location) {
+        showAlert('Required Field', 'Please select a location');
+        return false;
+      }
+      if (!program) {
+        showAlert('Required Field', 'Please select a program');
+        return false;
+      }
+      if (!activity) {
+        showAlert('Required Field', 'Please select an activity');
+        return false;
+      }
+      if (!date) {
+        showAlert('Required Field', 'Please select a date');
+        return false;
+      }
+      if (!startTime) {
+        showAlert('Required Field', 'Please select a start time');
+        return false;
+      }
+      if (!endTime) {
+        showAlert('Required Field', 'Please select an end time');
+        return false;
+      }
+    } else {
+      if (autoLogin) {
+        if (!username || !password) {
+          showAlert('Required Field', 'Please enter username and password')
+          return false;
+        }
+      }
+      if (emailNotification && !email) {
+        showAlert('Required Field', 'Please enter email address')
+        return false;
+      }
+      if (smsNotification && !number) {
+        showAlert('Required Field', 'Please enter a phone number')
+        return false;
+      }
+    }
+
+
     await chrome.action.setBadgeText({
         text: "ON"
     });
@@ -73,8 +118,17 @@ document.getElementById('stop-btn').addEventListener('click', async (e) => {
     });
 });
   
+document.querySelector('.toggle-password').addEventListener('click', function() {
+  const passwordInput = document.getElementById('password');
+  const icon = this;
 
+  // Toggle between password/text
+  const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+  passwordInput.setAttribute('type', type);
 
+  // Optional: Change icon when visible
+  icon.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+});
 // Example JavaScript for cascading dropdowns
 const programType = document.getElementById('program-type');
 const activityType = document.getElementById('activity-type');
@@ -217,4 +271,38 @@ chrome.storage.sync.get(['program', 'activity', 'date', 'startTime', 'endTime', 
     if (data.email) document.getElementById('email').value = data.email;
     if (data.smsNotification) document.getElementById('sms-notification').checked = data.smsNotification;
     if (data.number) document.getElementById('phone-number').value = data.number
+});
+
+
+// Custom Alert System
+function showAlert(title, message) {
+  const overlay = document.getElementById('alert-overlay');
+  const alertTitle = document.getElementById('alert-title');
+  const alertMessage = document.getElementById('alert-message');
+  
+  alertTitle.textContent = title;
+  alertMessage.textContent = message;
+  overlay.classList.add('active');
+  
+  // Focus the OK button for keyboard accessibility
+  document.getElementById('alert-ok-button').focus();
+}
+
+// Close alert when OK button is clicked
+document.getElementById('alert-ok-button').addEventListener('click', function() {
+  document.getElementById('alert-overlay').classList.remove('active');
+});
+
+// Close alert when clicking outside the box
+document.getElementById('alert-overlay').addEventListener('click', function(e) {
+  if (e.target === this) {
+    this.classList.remove('active');
+  }
+});
+
+// Close alert with Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && document.getElementById('alert-overlay').classList.contains('active')) {
+    document.getElementById('alert-overlay').classList.remove('active');
+  }
 });

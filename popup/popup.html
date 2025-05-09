@@ -6,6 +6,14 @@
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
+  <!-- Custom Alert Dialog -->
+  <div class="alert-overlay" id="alert-overlay">
+    <div class="alert-box">
+      <div class="alert-title" id="alert-title">Alert</div>
+      <div class="alert-message" id="alert-message"></div>
+      <button class="alert-button" id="alert-ok-button">OK</button>
+    </div>
+  </div>
   <div class="container">
     <h1>Slot Notifier</h1>
     <form id="preferences-form">
@@ -24,7 +32,10 @@
           </div>
           <div class="form-group">
             <label for="password">Password:</label>
-            <input type="password" id="password" placeholder="Enter password">
+            <div class="password-wrapper">
+              <input type="password" id="password" placeholder="Enter password">
+              <span class="toggle-password">👁️</span>  <!-- Or use an SVG/Font Awesome -->
+            </div>
           </div>
           <div class="form-group notification-section">
             <label for="email-notification">
