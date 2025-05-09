@@ -130,9 +130,66 @@ chrome.notifications.onClicked.addListener(() => {
 });
 
 function goToBooking() {
-  chrome.tabs.create({
-      url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=491a603e-4043-4ab6-b04d-8fac51edbcfc&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False"
-  });
+
+  chrome.storage.sync.get(['program'], (data) => {
+    switch (data.program) {
+      case "Activities for Age 55+":
+        chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=018e7083-d228-4af0-aab1-6d7958b3c8d4&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False"
+        });
+        break;
+      case "Aquafit":
+        chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=d4d891dd-9e45-474b-97c4-e43c8f8fe3b8&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False"
+        });
+        break;
+      case "Adapted":
+        chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=87aec518-3085-43dc-b1de-62e39e1c6956&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False"
+        });
+        break;
+      case "Group Fitness: Cardio":
+        chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=3cad5e4f-9aa0-430b-b2d4-8f75e0984e39&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False"
+        });
+        break;
+      case "Group Fitness: Mind & Body":
+        chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=1da4e633-1e1c-4639-8aed-aaeaef5ebb2d&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False"
+        });
+        break;
+      case "Group Fitness: Strength Training":
+        chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=f0a1e11c-56e9-4d9b-996d-ef8201cf6ed8&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False"
+        });
+        break;
+      case "Sensory Room / Inddor Playground":
+        chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=1b657632-f24f-42b3-bdb4-3043e211da12&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False"
+        });
+        break;
+      case "Skating":
+        chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=ecf5202d-4c97-4f89-b4e3-42966a1cc453&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False"
+        });
+        break;
+      case "Sports & Activities":
+        chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=491a603e-4043-4ab6-b04d-8fac51edbcfc&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False"
+        });
+        break;
+      case "Swimming":
+        chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=39bd5c76-e07f-43f3-af24-c6969091dbb4&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False"
+        });
+        break;
+      case "Tennis Round Robins":
+        chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=3f4b9fa1-1ba8-4d30-8abc-6f47de53c4b8&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False"
+        });
+        break;
+    }
+  })
 };
 
 function displaySlotAvailable() {
@@ -259,21 +316,96 @@ async function getAndBookSlotAvailable(buttonId) {
 }
 
 async function getSlotsAvailable() {
-  // create hidden tab
-  const tab = await chrome.tabs.create({
-    url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=491a603e-4043-4ab6-b04d-8fac51edbcfc&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False",
-    active: false,
-    pinned: true,
-  });
-  console.log("Created tab with ID:", tab.id); 
-  tempTab = tab
-  // delay so the website can inject their own stuff into it
-  setTimeout(() => {
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ["scripts/content.js"],
-    });
-  }, 5000);
+  chrome.storage.sync.get(['program'], async (data) => {
+    switch (data.program) {
+      case "Activities for Age 55+":
+        var tab = await chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=018e7083-d228-4af0-aab1-6d7958b3c8d4&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False",
+          active: false,
+          pinned: true,
+        });
+        break;
+      case "Aquafit":
+        var tab = await chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=d4d891dd-9e45-474b-97c4-e43c8f8fe3b8&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False",
+          active: false,
+          pinned: true,
+        });
+        break;
+      case "Adapted":
+        var tab = await chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=87aec518-3085-43dc-b1de-62e39e1c6956&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False",
+          active: false,
+          pinned: true,
+        });
+        break;
+      case "Group Fitness: Cardio":
+        var tab = await chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=3cad5e4f-9aa0-430b-b2d4-8f75e0984e39&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False",
+          active: false,
+          pinned: true,
+        });
+        break;
+      case "Group Fitness: Mind & Body":
+        var tab = await chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=1da4e633-1e1c-4639-8aed-aaeaef5ebb2d&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False",
+          active: false,
+          pinned: true,
+        });
+        break;
+      case "Group Fitness: Strength Training":
+        var tab = await chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=f0a1e11c-56e9-4d9b-996d-ef8201cf6ed8&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False",
+          active: false,
+          pinned: true,
+        });
+        break;
+      case "Sensory Room / Inddor Playground":
+        var tab = await chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=1b657632-f24f-42b3-bdb4-3043e211da12&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False",
+          active: false,
+          pinned: true,
+        });
+        break;
+      case "Skating":
+        var tab = await chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=ecf5202d-4c97-4f89-b4e3-42966a1cc453&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False",
+          active: false,
+          pinned: true,
+        });
+        break;
+      case "Sports & Activities":
+        var tab = await chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=491a603e-4043-4ab6-b04d-8fac51edbcfc&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False",
+          active: false,
+          pinned: true,
+        });
+        break;
+      case "Swimming":
+        var tab = await chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=39bd5c76-e07f-43f3-af24-c6969091dbb4&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False",
+          active: false,
+          pinned: true,
+        });
+        break;
+      case "Tennis Round Robins":
+        var tab = await chrome.tabs.create({
+          url: "https://cityofmarkham.perfectmind.com/Clients/BookMe4BookingPages/Classes?calendarId=3f4b9fa1-1ba8-4d30-8abc-6f47de53c4b8&widgetId=6825ea71-e5b7-4c2a-948f-9195507ad90a&embed=False",
+          active: false,
+          pinned: true,
+        });
+        break;
+    }
+    console.log("Created tab with ID:", tab.id); 
+    tempTab = tab
+    // delay so the website can inject their own stuff into it
+    setTimeout(() => {
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ["scripts/content.js"],
+      });
+    }, 6000);
+  })
 }
 
 function tabUpdatedListener(tabId, changeInfo, tab) {

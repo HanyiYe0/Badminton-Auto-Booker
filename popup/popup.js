@@ -95,6 +95,13 @@ const activities = {
       'Wellness & Strength Training',
       'Yoga'
     ],
+    'Aquafit': [
+        'Aquafit: Deep',
+        'Aquafit: Older Adults',
+        'Aquafit: Shallow',
+        'Aquafit: Shallow/Deep',
+        'Aquafit: Stretch'
+    ],
     'Adapted': [
       'Sensory Room'
     ],

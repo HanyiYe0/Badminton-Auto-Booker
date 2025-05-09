@@ -1,8 +1,8 @@
-chrome.storage.sync.get(['sportType', 'date', 'startTime', 'endTime', 'location'], (data) => {
+chrome.storage.sync.get(['activity', 'date', 'startTime', 'endTime', 'location'], (data) => {
     wantedStartTime = data.startTime;
     wantedEndTime = data.endTime;
     wantedFullTime = formateTime(wantedStartTime, wantedEndTime);
-    activity = data.sportType;
+    activity = data.activity;
     dateWanted = formatDate(data.date);
     wantedLocation = data.location;
     isDate = false;
