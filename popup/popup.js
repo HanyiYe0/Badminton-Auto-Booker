@@ -37,7 +37,6 @@ document.getElementById('start-btn').addEventListener('click', async (e) => {
     const email = document.getElementById('email').value;
     const smsNotification = document.getElementById('sms-notification').checked;
     const number = document.getElementById('phone-number').value
-
     // Checks for required fields
     if (!program || !activity || !date || !startTime || !endTime || !location) {
       // Check required fields
@@ -82,6 +81,10 @@ document.getElementById('start-btn').addEventListener('click', async (e) => {
       }
     }
 
+    // Start watch
+    const running = true;
+    document.getElementById("start-btn").disabled = true;
+
 
     await chrome.action.setBadgeText({
         text: "ON"
@@ -101,13 +104,20 @@ document.getElementById('start-btn').addEventListener('click', async (e) => {
     }
 
     // Save to Chrome storage
-    await chrome.storage.sync.set({ program, activity, date, startTime, endTime, location, username, password, autoLogin, emailNotification, email, smsNotification, number }, () => {
+    await chrome.storage.sync.set({ running, program, activity, date, startTime, endTime, location, username, password, autoLogin, emailNotification, email, smsNotification, number }, () => {
         console.log('Preferences saved!');
     });
   });
 
 document.getElementById('stop-btn').addEventListener('click', async (e) => {
     e.preventDefault();
+
+    const running = false;
+    await chrome.storage.sync.set({ running }, () => {
+        console.log('Stopped Run');
+    });
+    document.getElementById("start-btn").disabled = false;
+
     // set the icon as off
     await chrome.action.setBadgeText({
         text: "OFF"
@@ -306,3 +316,11 @@ document.addEventListener('keydown', function(e) {
     document.getElementById('alert-overlay').classList.remove('active');
   }
 });
+
+chrome.storage.sync.get(['running'], (data) => {
+  if (data.running) {
+    document.getElementById("start-btn").disabled = true;
+  } else {
+    document.getElementById("start-btn").disabled = false;
+  }
+})
