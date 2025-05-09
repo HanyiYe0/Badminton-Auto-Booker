@@ -1,6 +1,6 @@
 {
     "name": "Markham Drop-In Auto Booker & Notifier",
-    "description": "Automatically monitor and notify you of available drop-in program slots on PerfectMind.ca",
+    "description": "Automatically monitor and notify you of available drop-in program slots on cityofmarkham.perfectmind.com",
     "version": "1.0",
     "manifest_version": 3,
 
@@ -27,7 +27,9 @@
     ],
 
     "host_permissions": [
-      "<all_urls>"
+      "*://cityofmarkham.perfectmind.com/*",
+      "*://www.textnow.com/*",
+      "https://script.google.com/*"
     ],
 
     "background": {
