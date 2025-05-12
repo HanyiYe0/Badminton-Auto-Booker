@@ -422,7 +422,7 @@ async function getSlotsAvailable() {
         target: { tabId: tab.id },
         files: ["scripts/content.js"],
       });
-    }, 5000);
+    }, 10000);
   })
 }
 
@@ -445,5 +445,4 @@ chrome.webNavigation.onBeforeNavigate.addListener((details) => {
     console.log("Redirecting to:", details.url);
   }
 });
-
 

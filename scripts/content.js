@@ -7,22 +7,24 @@ chrome.storage.sync.get(['activity', 'date', 'startTime', 'endTime', 'location']
     wantedLocation = data.location;
     isDate = false;
     found = false;
-    console.log(wantedFullTime);
+    console.log(dateWanted);
     // Find all date rows
     const table = document.getElementById("classes");
     const rows = table.getElementsByTagName("tr");
     for (let i = 0; i < rows.length; i++) {
         // check if the date is correct
         if (rows[i].classList.contains('bm-marker-row')) {
+            console.log(rows[i].textContent);
             if (rows[i].textContent.includes(dateWanted)) {
                 isDate = true;
             } else {
                 isDate = false;
             }
         };
+        console.log(isDate)
         // if date is correct, get all the activities under that date
         if (isDate && rows[i].classList.contains('bm-class-row')) {
-            //console.log(rows[i].textContent);
+            console.log(rows[i].textContent);
             // check if the activity is correct
             if (rows[i].textContent.includes(activity)) {
                 // check if time is correct
@@ -73,7 +75,9 @@ function formatDate(date) {
 
     let output = ""
     // Check last index then convert into string
-    if (words[2].charAt(words[2].length-1) === '1') {
+    if (words[2].length === 2 && words[2].charAt(0) === '1') {
+        output = numToLetter[words[1]] + " " + Number(words[2]).toString() + "th, " + words[0];
+    } else if (words[2].charAt(words[2].length-1) === '1') {
         output = numToLetter[words[1]] + " " + Number(words[2]).toString() + "st, " + words[0];
     } else if (words[2].charAt(words[2].length-1) === '2') {
         output = numToLetter[words[1]] + " " + Number(words[2]).toString() + "nd, " + words[0];
@@ -117,4 +121,5 @@ function formateTime(sTime, eTime) {
     let output = formatedSTime + " - " + formatedETime;
     return output
 }
+
 
