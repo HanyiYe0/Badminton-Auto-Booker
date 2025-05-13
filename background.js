@@ -69,7 +69,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         target: { tabId: tempTab.id},
         files: ["scripts/autologin.js"],
       });
-    }, 3000);
+    }, 10000);
 
 
   } else if (request.action === "updateTab") {
